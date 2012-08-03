@@ -1,0 +1,16 @@
+name: CommandWatcher
+
+version: 0.4
+
+description: Listen to Commands
+
+author: McLuke300
+
+main: me.mcluke300.commandlistener.CommandListener
+
+
+
+commands:
+   CW:
+      description: Enables CommandWatch
+      permission: commandwatch.watch
