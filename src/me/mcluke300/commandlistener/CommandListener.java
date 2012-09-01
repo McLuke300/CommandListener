@@ -40,6 +40,7 @@ public class CommandListener extends JavaPlugin{
 		String path1 = "BlockedCommands";
 		String path2 = "OnCommandMessage";
 		String path3 = "RemoveFromCwOnQuit";
+		String path4 = "EnablePermissionExempt";
 		List<String> words = new ArrayList<String>();
 		words.add("/login");
 		words.add("/changepassword");
@@ -48,6 +49,7 @@ public class CommandListener extends JavaPlugin{
 		getConfig().addDefault(path1, words);
 		getConfig().addDefault(path2, "&3[CW]&c&player &6&cmd");
 		getConfig().addDefault(path3, true);
+		getConfig().addDefault(path4, true);
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 
@@ -125,26 +127,25 @@ public class CommandListener extends JavaPlugin{
 
 
 
-	public static void oncommand(String msg, Player player) {
+	public static void oncommand(String msg, Player player, String x, String y, String z, String world) {
 		String playername = player.getName();
 		for(String player1 :hashmap.keySet()) {
 			Player player2 = Bukkit.getPlayer(player1);
 			String msg2[] = msg.split(" ");
-			if (player1 != null && !playername.equalsIgnoreCase(player1)){
+			if (player1 != null && !playername.equalsIgnoreCase(player1) && player2 != null){
+				if(!player.hasPermission("commandwatch.exempt") || player2.hasPermission("commandwatch.bypassexempt") || !plugin.getConfig().getBoolean("EnablePermissionExempt")) {
 				if (plugin.getConfig().getBoolean("BlackListCommands") == true) {
 					if (!plugin.getConfig().getStringList("BlockedCommands").contains(msg2[0].toLowerCase())) {
 						String result = plugin.getConfig().getString("OnCommandMessage");
-						String result2 = result.replaceAll("&player", playername);
-						String result3 = result2.replaceAll("&cmd", msg);
-						result3 = result3.replaceAll("&([0-9a-fA-F])", "§$1");
-						player2.sendMessage(result3);
-					}}
-				else {
-					String result = plugin.getConfig().getString("OnCommandMessage");
-					String result2 = result.replaceAll("&player", playername);
-					String result3 = result2.replaceAll("&cmd", msg);
-					result3 = result3.replaceAll("&([0-9a-fA-F])", "§$1");
-					player2.sendMessage(result3);}}}}
+						result = result.replaceAll("&player", playername);
+						result = result.replaceAll("&cmd", msg);
+						result = result.replaceAll("&x", x);
+						result = result.replaceAll("&y", y);
+						result = result.replaceAll("&z", z);
+						result = result.replaceAll("&world", world);
+						result = result.replaceAll("&([0-9a-fA-F])", "§$1");
+						player2.sendMessage(result);
+					}}}}}}
 
 	public static void onquit(String playname) {
 		if (plugin.getConfig().getBoolean("RemoveFromCwOnQuit")) {
